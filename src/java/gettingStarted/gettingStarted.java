@@ -3,23 +3,17 @@
  * and open the template in the editor.
  */
 package gettingStarted;
-import weka.core.Instances;
-import weka.filters.unsupervised.attribute.Remove;
-import weka.classifiers.trees.J48;
-import weka.filters.Filter;
-import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.Evaluation;
+import weka.core.Instances;
+import weka.filters.Filter;
 import weka.classifiers.functions.MultilayerPerceptron;
-import weka.filters.supervised.instance.StratifiedRemoveFolds;
 import weka.filters.unsupervised.instance.RemovePercentage;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import weka.core.converters.ConverterUtils.DataSource;
 /**
  *
  * @author luilly
- * Se lee un archivo ARFF. No se realiza preprocesamiento sobre los datos
+ * A travez de la clase DataSource, leemos un archivo ARFF. 
+ * No se realiza preprocesamiento sobre los datos
  * y se define su propiedad clase. Se elige un algoritmo basado en 
  * funciones con el objetivo de construir una red neuronal capaz de 
  * encontrar diferencias entre conexiones de red normales y de tipo 
@@ -29,17 +23,16 @@ import java.io.IOException;
  */
 public class gettingStarted {
     
-    public static void main(String[] args) 
-            throws FileNotFoundException, IOException, Exception {
+    public static void main(String[] args) throws Exception {
         
         /* Cargamos en memoria el archivo ARFF
+         * La clase DataSource nos ahorra 2 lineas de codigo,
+         * ademas de facilitar la legibilidad del codigo.
          * Total de datos: 125973 */
-        BufferedReader rDataSet = new BufferedReader( 
-                                            new FileReader("NSL-KDD.arff") );        
+        DataSource  oDataSet = new DataSource( "Pliegue 1.arff" );        
         
         /* Convertimos la data a un objeto Instances */
-        Instances iDataSet = new Instances(rDataSet);
-        rDataSet.close();
+        Instances iDataSet = oDataSet.getDataSet();
          
         /* Configuramos la clase de la data */
         iDataSet.setClassIndex( iDataSet.numAttributes() - 1 );
@@ -62,12 +55,19 @@ public class gettingStarted {
                                 "-L 0.3 -M 0.2 -N 1 -V 0 -S 0 -E 20 -H a" );
         mp.setOptions(oMultilayerPerceptron);
         
-        /* Entrenar */
+        /** */
         System.out.println(iDataSet.numInstances());
         System.out.println(iTrain.numInstances());
         System.out.println(iTest.numInstances());
-
+        
+        /* Entrenar */
         mp.buildClassifier(iTrain);
+        weka.core.SerializationHelper.write("model.model", mp);
+        
+        Evaluation eval = new Evaluation(iTrain);
+        eval.evaluateModel(mp, iTest);
+        
+        System.out.println( eval.toSummaryString("Fermin%", false) );
         
         /* Realizando predicciones */
         for(int i=0;i<iTest.numInstances();i++ ){
