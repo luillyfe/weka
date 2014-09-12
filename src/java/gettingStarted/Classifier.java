@@ -68,7 +68,7 @@ public class Classifier {
         try {
             /** Se establecen las opciones del clasificador */
             oMultilayerPerceptron = weka.core.Utils.splitOptions( 
-                           "-L 0.3 -M 0.2 -N 120 -V 0 -S 0 -E 20 -H 6" );
+                           "-L 0.3 -M 0.2 -N 90 -V 0 -S 0 -E 20 -H 6" );
             mp.setOptions(oMultilayerPerceptron);
             
             /* Entrenar */
@@ -101,15 +101,18 @@ public class Classifier {
     private void toSaveModel() {
         try {
             /** Salvar el modelo */
-            weka.core.SerializationHelper.write("models/120E.model", mp);
+            weka.core.SerializationHelper.write("models/AttackTypeFold290E.model", mp);
         } catch (Exception ex) {
             System.err.println("Error al salvar el modelo" + ex);}
     }
     
     public static void main(String[] args) {
-        Path data = Paths.get( "Pliegue 1.arff" );
-        Path model = Paths.get( "models/120E.model" );
+        Path data = 
+                Paths.get( "C:\\Users\\luilly\\Google Drive\\Proyectos\\Scarlett "
+                + "Johansson\\Otros\\kdd files\\deteccion tipo de ataque\\"
+                + "AttackTypeClassFold2.arff" );
+        //Path model = Paths.get( "models/AttackType30E.model" );
         
-        new Classifier(data, model);
+        new Classifier(data);
     }
 }

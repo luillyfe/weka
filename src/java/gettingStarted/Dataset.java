@@ -35,13 +35,13 @@ public class Dataset {
         try {
             Add filter = new Add();
             filter.setAttributeIndex(index);
-            filter.setNominalLabels("normal,anomaly");
+            //filter.setNominalLabels("normal,anomaly");
             filter.setAttributeName(name);
             filter.setInputFormat(iDataset);
             iDataset = Filter.useFilter(iDataset, filter);
             
-            //for(int i=0;i<iDataset.numInstances();i++)
-                //iDataset.instance(i).setValue(0, i+1);
+            for(int i=0;i<iDataset.numInstances();i++)
+                iDataset.instance(i).setValue(0, i+1);
             
             saver = new ArffSaver();
             saver.setInstances(iDataset);
@@ -72,9 +72,10 @@ public class Dataset {
         //Path data = Paths.get( "C:/Users/luilly/Documents/Data/data10.arff" );
         //Path uno  = Paths.get( "C:/Users/luilly/Documents/Data/data1.arff" );
         
-        for(int i= 2;i<10;i++) {
-            Path data = Paths.get( "C:/Users/luilly/Documents/Data/data"+i+".arff" );
-            new Dataset( data ).addAttribute("last", "class", i);
+        for(int i= 1;i<10;i++) {
+            Path data = Paths.get( "C:/Users/luilly/Documents/Data/"
+                                            + "AttackTypeClassFold"+i+".arff" );
+            new Dataset( data ).addAttribute("first", "class", i);
         }
         //new Dataset( uno ).rmAttribute(43+"");
     }
